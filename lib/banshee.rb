@@ -1,4 +1,5 @@
 require "banshee/version"
+require "banshee/controller"
 
 module Banshee
   class Application
@@ -14,7 +15,7 @@ module Banshee
       response = controller.new.send(action)
       [ 200, {"Content-type" => "text/html"}, [ response ] ]
     end
-  
+
     def get_controller_and_action(env)
       p env
       _, controller, action = env["PATH_INFO"].split("/")
