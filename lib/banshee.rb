@@ -2,6 +2,7 @@ require "banshee/version"
 require "banshee/controller"
 require "banshee/utils"
 require "banshee/dependencies"
+require "banshee/scream"
 
 module Banshee
   class Application

@@ -24,21 +24,19 @@ module Banshee
     end
 
     def render_template(view, locals = {})
-      filename = File.join("app", "views", controller, "#{view}.erb")
-      template = File.read(filename)
+      filename = File.join('app', 'views', controller, "#{view}.erb")
 
-      # {name: "John"}
-      data = {}
-      instance_variables.each do |var|
-        key = var.to_s.gsub('@', '').to_sym
-        data[key] = instance_variable_get(var)
+      # Add the defined variables inside the view to the template
+      instance_variables.each do |instance_variable|
+        key = instance_variable.to_s.delete('@').to_sym
+        locals[key] = instance_variable_get(instance_variable)
       end
 
-      locals.merge!(data)
+      Banshee::Scream.render(template: File.read(filename), locals: locals)
     end
 
     def controller
-      self.class.to_s.gsub(/Controller$/, "").snakeify
+      self.class.to_s.gsub(/Controller$/, '').snakeify
     end
   end
 end
