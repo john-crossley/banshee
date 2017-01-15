@@ -38,5 +38,20 @@ module Banshee
     def controller
       self.class.to_s.gsub(/Controller$/, '').snakeify
     end
+
+    def dispatch(action)
+      content = self.send(action)
+      if get_response
+        get_response
+      else
+        render(action)
+        get_response
+        # [ 200, {"Content-type" => "text/html"}, [ response ] ]
+      end
+    end
+
+    def self.action(action)
+      -> (env) { self.new(env).dispatch(action) }
+    end
   end
 end
