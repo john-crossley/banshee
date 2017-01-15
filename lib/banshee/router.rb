@@ -6,7 +6,7 @@ module Banshee
     end
 
     def match(url, *args)
-      target = args.shift if args.size > 0
+      target = args.shift unless args.empty?
 
       @routes << {
         regexp: Regexp.new("^#{url}$"),
@@ -14,7 +14,7 @@ module Banshee
       }
     end
 
-    def check_url(url)
+    def match_url(url)
       @routes.each do |route|
         if route[:regexp].match(url) &&
            /^(?<name>[^@]+)@(?<action>[^@]+)$/ =~ route[:target]
@@ -31,8 +31,8 @@ module Banshee
       @router.instance_eval(&block)
     end
 
-    def get_rack_app(env)
-      @router.check_url(env["PATH_INFO"])
+    def get_application(env)
+      @router.match_url(env['PATH_INFO'])
     end
   end
 end

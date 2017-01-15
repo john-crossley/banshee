@@ -1,7 +1,7 @@
 module Banshee
   class Controller
 
-    attr_reader :request, :params
+    attr_reader :request, :params, :response
 
     def initialize(env)
       @request ||= Rack::Request.new(env)
@@ -12,15 +12,11 @@ module Banshee
     end
 
     def render(*args)
-      response(body: render_template(*args))
+      prepare_response(body: render_template(*args))
     end
 
-    def response(body:, status: 200, headers: {})
+    def prepare_response(body:, status: 200, headers: {})
       @response = Rack::Response.new(body, status, headers)
-    end
-
-    def get_response
-      @response
     end
 
     def render_template(view, locals = {})
@@ -40,14 +36,11 @@ module Banshee
     end
 
     def dispatch(action)
-      content = self.send(action)
-      if get_response
-        get_response
-      else
-        render(action)
-        get_response
-        # [ 200, {"Content-type" => "text/html"}, [ response ] ]
-      end
+      send(action)
+      return response if response
+
+      render(action)
+      response
     end
 
     def self.action(action)
