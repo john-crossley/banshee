@@ -1,5 +1,7 @@
 require "banshee/version"
 require "banshee/controller"
+require "banshee/utils"
+require "banshee/dependencies"
 
 module Banshee
   class Application
@@ -20,7 +22,7 @@ module Banshee
       p env
       _, controller, action = env["PATH_INFO"].split("/")
 
-      controller = "#{controller.capitalize}Controller"
+      controller = "#{controller.camelify}Controller"
       [ Object.const_get(controller), action ]
     end
 

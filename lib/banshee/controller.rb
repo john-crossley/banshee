@@ -6,7 +6,7 @@ module Banshee
     end
 
     def controller
-      self.class.to_s.gsub(/Controller$/, "").downcase
+      self.class.to_s.gsub(/Controller$/, "").snakeify
     end
   end
 end
