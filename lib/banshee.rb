@@ -13,9 +13,17 @@ module Banshee
       return [ 500, {}, [] ] if env["PATH_INFO"] == "/favicon.ico"
 
       # env["PATH_INFO"] = "/hello/world" => HelloController.send(:world)
-      controller, action = get_controller_and_action(env)
-      response = controller.new.send(action)
-      [ 200, {"Content-type" => "text/html"}, [ response ] ]
+      controller_class, action = get_controller_and_action(env)
+      controller = controller_class.new(env)
+      response = controller.send(action)
+
+      if controller.get_response
+        controller.get_response
+      else
+        controller.render(action)
+        controller.get_response
+        # [ 200, {"Content-type" => "text/html"}, [ response ] ]
+      end
     end
 
     def get_controller_and_action(env)
